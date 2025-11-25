@@ -1,5 +1,6 @@
 import express from "express";
-import { VoiceResponse } from "twilio";
+import twilio from "twilio";
+const { VoiceResponse } = twilio;
 import dotenv from "dotenv";
 import http from "http";
 import WebSocket from "ws";
