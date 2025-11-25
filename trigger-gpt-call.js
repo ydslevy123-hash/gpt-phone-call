@@ -7,14 +7,13 @@ const client = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TO
 
 async function triggerGPTCall() {
   try {
-    const execution = await client.studio.flows(process.env.TWILIO_SUBFLOW_SID)
-      .executions.create({
-        to: process.env.ISRAEL_NUMBER,
-        from: process.env.TWILIO_PHONE_NUMBER,
-        parameters: { targetNumber: process.env.ISRAEL_NUMBER }
-      });
+    const call = await client.calls.create({
+      to: process.env.ISRAEL_NUMBER,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      url: "https://gpt-phone-call.onrender.com/twiml"
+    });
 
-    console.log("✅ GPT call triggered:", execution.sid);
+    console.log("✅ GPT call triggered:", call.sid);
   } catch (err) {
     console.error("❌ Error:", err);
   }
