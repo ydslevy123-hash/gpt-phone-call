@@ -1,8 +1,9 @@
 import express from "express";
 import expressWs from "express-ws";
 import WebSocket from "ws";
-import { config } from "dotenv";
-config();
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 expressWs(app);
@@ -12,14 +13,14 @@ app.use(express.json());
 // Twilio webhook
 app.post("/twilio-stream", (req, res) => {
   res.set("Content-Type", "text/xml");
-  res.send(\`
+  res.send(`
     <Response>
       <Start>
-        <Stream url="wss://\${req.headers.host}/media" />
+        <Stream url="wss://${req.headers.host}/media" />
       </Start>
       <Say voice="alice">Hi, GPT is now on the call.</Say>
     </Response>
-  \`);
+  `);
 });
 
 // Media WebSocket
@@ -30,7 +31,7 @@ app.ws("/media", (ws) => {
     "wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview",
     {
       headers: {
-        Authorization: \`Bearer \${process.env.OPENAI_API_KEY}\`,
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         "OpenAI-Beta": "realtime=v1",
       },
     }
@@ -69,17 +70,20 @@ app.ws("/media", (ws) => {
 
   // OpenAI → Twilio
   openai.on("message", (msg) => {
-    const data = JSON.parse(msg);
-
-    if (data.type === "response.audio.delta") {
-      ws.send(
-        JSON.stringify({
-          event: "media",
-          media: {
-            payload: data.delta,
-          },
-        })
-      );
+    try {
+      const data = JSON.parse(msg);
+      if (data.type === "response.audio.delta") {
+        ws.send(
+          JSON.stringify({
+            event: "media",
+            media: {
+              payload: data.delta,
+            },
+          })
+        );
+      }
+    } catch (e) {
+      console.error("OpenAI message parse error:", e);
     }
   });
 
@@ -88,6 +92,7 @@ app.ws("/media", (ws) => {
   });
 });
 
-app.listen(3000, () =>
-  console.log("🚀 Server running on http://localhost:3000")
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () =>
+  console.log(`🚀 Server running on http://localhost:${PORT}`)
 );
