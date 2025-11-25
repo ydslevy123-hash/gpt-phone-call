@@ -1,12 +1,12 @@
 import express from "express";
 import twilio from "twilio";
-const { VoiceResponse } = twilio;
 import dotenv from "dotenv";
 import http from "http";
 import WebSocket from "ws";
 
 dotenv.config();
 
+const { VoiceResponse } = twilio;
 const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
