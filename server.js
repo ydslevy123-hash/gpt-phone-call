@@ -2,6 +2,7 @@ import express from "express";
 import expressWs from "express-ws";
 import WebSocket from "ws";
 import dotenv from "dotenv";
+import { exec } from "child_process";
 
 dotenv.config();
 
@@ -89,6 +90,16 @@ app.ws("/media", (ws) => {
 
   ws.on("close", () => {
     openai.close();
+  });
+});
+
+// ------------------------
+// HTTP endpoint to trigger GPT call
+// ------------------------
+app.get("/trigger-gpt-call", (req, res) => {
+  exec("node trigger-gpt-call.js", (err, stdout, stderr) => {
+    if (err) return res.send("❌ Error: " + err.message);
+    res.send("✅ GPT call triggered!\n" + stdout);
   });
 });
 
