@@ -1,18 +1,20 @@
 import express from "express";
-import twilio from "twilio";
 import dotenv from "dotenv";
 import http from "http";
-import WebSocket from "ws";
+import { WebSocketServer } from "ws";   // ✅ fixed import
+import twilio from "twilio";
 
 dotenv.config();
 
 const { VoiceResponse } = twilio;
+
 const app = express();
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+const wss = new WebSocketServer({ server });  // ✅ fixed usage
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
 
 app.post("/twiml", (req, res) => {
   const twiml = new VoiceResponse();
