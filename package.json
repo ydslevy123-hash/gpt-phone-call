@@ -1,18 +1,18 @@
 {
-  "name": "gpt-phone-call",
+  "name": "gemini-phone-call",
   "version": "1.0.0",
-  "description": "GPT phone call project using Twilio and OpenAI",
+  "description": "AI phone assistant (Twilio + Gemini)",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "dependencies": {
+    "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-ws": "^5.0.2",
-    "ws": "^8.13.0",
-    "dotenv": "^16.3.1",
     "twilio": "^4.18.0",
-    "openai": "^6.9.1"
+    "ws": "^8.13.0",
+    "@google/generative-ai": "^0.14.0"
   }
-} 
+}
